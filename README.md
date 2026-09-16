@@ -10,4 +10,4 @@ When building in Release-Mode, neither is used, and in Debug one just has
 to change them out for the .exe.
 
 # Building
-See same chapter in WebpageWaiter's READE.md
+See same chapter in WebpageWaiter's README.md
