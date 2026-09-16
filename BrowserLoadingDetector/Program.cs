@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using FlaUI.Core;
@@ -106,7 +107,22 @@ namespace BrowserLoadingDetector
             for (int i = 0; i < 10; i++)
                 try
                 {
-                    buttonState = (BitmapMat)button.Capture();
+                    Bitmap buttonPicture = button.Capture();
+                    
+                    // If necessary, size down symmetrically such that each side is at least 28 pixels (25 should still be fine, but we use a fast down-scaler, so safe is safe)
+                    if (buttonPicture.Width >= 30 && buttonPicture.Height>=30)
+                    {
+                        double ratio = 28.0 / (Math.Min(buttonPicture.Width,buttonPicture.Height));
+                        buttonState = (BitmapMat)new Bitmap(buttonPicture,
+                                                            (int) (buttonPicture.Width*ratio),
+                                                            (int)(buttonPicture.Height*ratio));
+                        buttonPicture.Dispose();
+
+                    }
+                    else
+                        buttonState = (BitmapMat)buttonPicture;
+                        
+
                     break;
                 }
                 catch

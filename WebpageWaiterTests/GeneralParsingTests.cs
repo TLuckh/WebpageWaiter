@@ -8,7 +8,7 @@ using WebpageWaiter;
 namespace WebpageWaiterTests
 {
     [TestFixture]
-    public class Tests
+    public class GeneralParsingTests
     {
 
 
@@ -25,7 +25,7 @@ namespace WebpageWaiterTests
             string sequence = "Hello World$!ß __ x3 ´´ !\"§%%&%$\"&";
             AutoTypeEventArgs e = new AutoTypeEventArgs(sequence,false,null,null);
 
-            (List<(string partLeftOfSequence,CSequence cSequence,GroupCollection groups)> parts,string final_part) res =
+            (List<(string partLeftOfSequence,CSequence cSequence)> parts,string final_part) res =
                 WebpageWaiterExt._MethodParts.ExtractCSequences(e);
             
             Assert.True(res.parts.Count == 0);
@@ -38,7 +38,7 @@ namespace WebpageWaiterTests
             string            sequence = "Hello World$!ß __ x3 ´{Sample}´ !\"§%%&%$\"&";
             AutoTypeEventArgs e        = new AutoTypeEventArgs(sequence,false,null,null);
 
-            (List<(string partLeftOfSequence,CSequence cSequence,GroupCollection groups)> parts,string final_part) res =
+            (List<(string partLeftOfSequence,CSequence cSequence)> parts,string final_part) res =
                 WebpageWaiterExt._MethodParts.ExtractCSequences(e);
             
             Assert.True(res.parts.Count == 0);
@@ -47,22 +47,24 @@ namespace WebpageWaiterTests
         [Test]
         public void IrrelevantAndRelevantCSequencesMixed()
         {
-            CSequence cSequence = CSequence.WaitForUrl;
             string url = "https://google.com/query?=3";
-            string relevantCSequence = nameof(CSequence.WaitForUrl);
+            string relevantCSequence = nameof(WaitForUrl);
+            string maxWaitTime = "100";
 
             string left = $"Hello World$!ß __ x3 ´{{Sample}}´ ";
-            string middle = $"{{{relevantCSequence}:{url}}}";
+            string middle = $"{{{relevantCSequence}:{url}:{maxWaitTime}}}";
             string right = $"!\"§%%&%$\"&";
             string sequence = left + middle + right;
             AutoTypeEventArgs e        = new AutoTypeEventArgs(sequence,false,null,null);
 
-            (List<(string partLeftOfSequence,CSequence cSequence,GroupCollection groups)> parts,string final_part) res =
+            (List<(string partLeftOfSequence,CSequence cSequence)> parts,string final_part) res =
                 WebpageWaiterExt._MethodParts.ExtractCSequences(e);
             
             Assert.True(res.parts.Count == 1);
             Assert.True(res.parts[0].partLeftOfSequence == left);
-            Assert.True(res.parts[0].cSequence == cSequence);
+            Assert.True(res.parts[0].cSequence is WaitForUrl);
+            var cSequence = (WaitForUrl) res.parts[0].cSequence ;
+            Assert.True(cSequence.Url == url);
             Assert.True(res.final_part== right);
         }
     }

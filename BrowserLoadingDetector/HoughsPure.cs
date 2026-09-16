@@ -364,8 +364,36 @@ namespace BrowserLoadingDetector
 
         // public static explicit operator Bitmap(BitmapMat d) => d._grayByteArray;
         public static explicit operator BitmapMat(Bitmap d) => new BitmapMat(d);
- 
+
+
+        protected bool Equals(BitmapMat other)
+        {
+            if (Width != other.Width || Height != other.Height)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < _grayByteArray.GetLength(0); i++)
+                for (int j = 0; j < _grayByteArray.GetLength(1); j++)
+                    if (this[i,j] != other[i,j])
+                        return false;
+
+            return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((BitmapMat)obj);
+        }
         
+
+
+        public static bool operator ==(BitmapMat left, BitmapMat right) { return Equals(left, right); }
+        public static bool operator !=(BitmapMat left, BitmapMat right) { return !Equals(left, right); }
+
         public static unsafe byte[,] ToGrayArray(Bitmap bitmap)
         {
 

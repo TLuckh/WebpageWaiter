@@ -12,9 +12,6 @@ using KeePass.Util.Spr;
 using KeePassLib.Utility;
 using Debug = System.Diagnostics.Debug;
 
-// ToDo: Resize image before doing Hough. Even on Full HD it's pretty work intensive; We can also only do it once, save the HelpString (though I had browsers not give any...), and then wait for it to change
-// Houghs is still more agnostic than looking for a change of loading button help text, or change of URL, so I probably shouldn't completely remove it
-// ToDo: Turn the CSeqeuence-Enum into a (closed) subtype hierarchy (validation needs type specific fields to save good results in)
 // ToDo: Make HoughCircle only check center-points of the circle near the center of the picture? Not sure tbh
 // ToDo: Add in .csproj that the Release-Build builds against the KeePass.exe (do I need to sign my assembly)?
 // ToDo: Ship as Plugin-Extension-Format?
@@ -51,7 +48,7 @@ namespace WebpageWaiter
 
         public static void HandleAutoTypeFilterCompilePre(object sender,AutoTypeEventArgs e)
         {
-            (List<(string partLeftOfSequence, CSequence cSequence, GroupCollection groups)> parts, string finalPart) = _MethodParts.ExtractCSequences(e);
+            (List<(string partLeftOfSequence, CSequence cSequence)> parts, string finalPart) = _MethodParts.ExtractCSequences(e);
 
 
             // Our plugin doesn't have anything to do if there's none of our plugin-specific {...}-sequences in the auto-type sequence
@@ -63,18 +60,18 @@ namespace WebpageWaiter
 
             try
             {
-                foreach (var (irrelevantAutotypeSequence,cSequence,groups) in parts)
+                foreach (var (irrelevantAutotypeSequence,cSequence) in parts)
                 {
                     // Perform the part of the auto-type-sequence preceeding the plugin-specific {...}-sequence
                     KeePass.Util.AutoType.PerformIntoCurrentWindow(e.Entry,e.Database,irrelevantAutotypeSequence);
                     // Wait a little so we don't query before the webpage even started loading
-                    Thread.Sleep(250);
+                    Thread.Sleep(100);
 
                     //ToDo:Get browser state & active page per IAccessible (per Chrome Remote Debug Protocol?)
                     // List<PwFieldAndSurroundingFields> fields = DataStructures.GetCredentialFields();
                     // ToDo: switch over cSequence and do what has to be done:
-                    int  maxWaitTime = cSequence.GetMaxWaitTime(groups);
-                    bool success     = cSequence.Perform(groups,maxWaitTime);
+                    int  maxWaitTime = cSequence.GetMaxWaitTime();
+                    bool success     = cSequence.Perform();
 
                     if (!success)
                         return; // Something went wrong.
@@ -116,37 +113,34 @@ namespace WebpageWaiter
             ///     <description>The left element is an auto-type sequence which contains nothing our plugin has to act on.</description>
             ///   </item>
             ///   <item>
-            ///     <description>The middle element is an enum value encoding which plugin-{...}-sequence we matched.</description>
-            ///   </item>
-            ///   <item>
-            ///     <description>The right element is the groups of the enum_value.Regex Match we got.</description>
+            ///     <description>The middle element is a subtype of CSequence instance, encoding which plugin-{...}-sequence we matched and what parameters it's got.</description>
             ///   </item>
             /// </list>
             /// </returns>
 
-            public static (List<(string partLeftOfSequence, CSequence cSequence, GroupCollection groups)> parts,string final_part) ExtractCSequences(AutoTypeEventArgs e)
+            public static (List<(string partLeftOfSequence, CSequence cSequence)> parts, string finalPart) ExtractCSequences(AutoTypeEventArgs e)
             {
                 string sequence = e.Sequence;
 
                   
-                List<(string partLeftOfSequence,CSequence cSequence,GroupCollection groups)> parts      = [];
-                string                                                                       final_part = "";
+                List<(string partLeftOfSequence,CSequence cSequence)> parts      = [];
+                string                                                finalPart = "";
                 // The sequence is of the form "<irrelevant_string> <plugin-sequence> ...",
                 // where <irrelevant_string> is a maximal part that doesn't contain any squirly brackets with contents that concern our plugin,
                 // and  <{...}-sequences> is the following part, which *is* a plugin-relevant sequence.
-                // We split this sequence into (<irrelevant_string> ,<enum for {...}-sequence>, <groups of the {...}-sequence) tuples, which we put into parts.
-                // The sequence may end on a <irrelevant_string>, which we in that case put into final_part.
+                // We split this sequence into (<irrelevant_string> ,<instance for {...}-sequence>) tuples, which we put into parts.
+                // The sequence may end on a <irrelevant_string>, which we in that case put into finalPart.
                 
                 int matchSearchStart = 0;
                 while (CSequence.GenericCSequence.Match(sequence,matchSearchStart) is Match { Success: true } match)
                 {
                     matchSearchStart =match.Index + match.Length;
                     
-                    if (CSequence.TryParse(match.Value,out CSequence cSequence,out GroupCollection? groups))
+                    if (CSequence.TryParse(match.Value,out CSequence cSequence))                            // If a user input an invalid CSequence, then we effectively pass it back to KeePass, where it is detected as such
                     {
                         string partLeftOfSequence  = sequence.Substring(0,match.Index);
                         string partRightOfSequence = sequence.Substring(match.Index + match.Length);
-                        parts.Add((partLeftOfSequence,cSequence,groups));
+                        parts.Add((partLeftOfSequence,cSequence));
                         
                         sequence = partRightOfSequence;
                         matchSearchStart = 0;
@@ -154,10 +148,10 @@ namespace WebpageWaiter
                 }
 
                 if (sequence != "")
-                    final_part = sequence;
+                    finalPart = sequence;
 
 
-                return (parts, final_part);
+                return (parts, finalPart);
             }
 
         }
