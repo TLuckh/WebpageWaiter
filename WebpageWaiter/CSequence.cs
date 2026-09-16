@@ -235,11 +235,13 @@ public abstract class CSequence                                                 
 /// </summary>
 public sealed class WaitForUrl : CSequence
 {
-    public static Regex Regex { get; } = new Regex(
-        $@"\{{WaitForUrl:(?<{nameof(Url)}>[^{{}}]*):(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    public override string PlaceHolderString => @"{WaitForUrl:URL:MaxWaitTimeMs}";
+    public static Regex Regex { get; } = new Regex(
+                                                   $@"\{{WaitForUrl:(?<{nameof(Url)}>[^{{}}]*):(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
+                                                   RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    
+    public const string _PlaceHolderString = @"{WaitForUrl:URL:MaxWaitTimeMs}";
+    public override string PlaceHolderString => _PlaceHolderString;
 
     /// <summary>
     /// The URL that is expected to be shown.
@@ -304,8 +306,10 @@ public sealed class WaitForWebpageReady : CSequence
     public static Regex Regex { get; } = new Regex(
                                                    $@"\{{WebpageReady:(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
                                                    RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    
+    public const string _PlaceHolderString = @"{WebpageReady:WaitTimeMs}";
 
-    public override string PlaceHolderString => @"{WebpageReady:WaitTimeMs}";
+    public override string PlaceHolderString => _PlaceHolderString;
 
     private WaitForWebpageReady(GroupCollection groups) : base(groups)
     {
@@ -390,7 +394,8 @@ public sealed class SelectFirstPwEntry : CSequence
         $@"\{{SelectFirstPwEntry:(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    public override string PlaceHolderString => @"{SelectFirstPwEntry:MaxWaitTimeMs}";
+    public const string _PlaceHolderString = @"{SelectFirstPwEntry:MaxWaitTimeMs}";
+    public override string PlaceHolderString => _PlaceHolderString;
 
     private SelectFirstPwEntry(GroupCollection groups) : base(groups)
     {
@@ -432,7 +437,8 @@ public sealed class SelectEditableEntryAbovePw : CSequence
         $@"\{{SelectEditableEntryAbovePw:(?<{nameof(Index)}>[^{{}}]*):(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    public override string PlaceHolderString => @"{SelectEditableEntryAbovePw:INTEGER:MaxWaitTimeMs}";
+    public const string _PlaceHolderString = @"{SelectEditableEntryAbovePw:INTEGER:MaxWaitTimeMs}";
+    public override string PlaceHolderString => _PlaceHolderString;
 
     /// <summary>
     /// The zero-based index of the editable entry above the password entry.
@@ -481,7 +487,8 @@ public sealed class SelectEditableEntryBelowPw : CSequence
         $@"\{{SelectEditableEntryBelowPw:(?<{nameof(Index)}>[^{{}}]*):(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    public override string PlaceHolderString => @"{SelectEditableEntryBelowPw:INTEGER:MaxWaitTimeMs}";
+    public const string _PlaceHolderString = @"{SelectEditableEntryBelowPw:INTEGER:MaxWaitTimeMs}";
+    public override string PlaceHolderString => _PlaceHolderString;
 
     /// <summary>
     /// The zero-based index of the editable entry below the password entry.
@@ -530,7 +537,8 @@ public sealed class SelectPwEntry : CSequence
         $@"\{{SelectPwEntry:(?<{nameof(Index)}>[^{{}}]*):(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    public override string PlaceHolderString => @"{SelectPwEntry:INTEGER:MaxWaitTimeMs}";
+    public const string _PlaceHolderString = @"{SelectPwEntry:INTEGER:MaxWaitTimeMs}";
+    public override string PlaceHolderString => _PlaceHolderString;
 
     /// <summary>
     /// The zero-based index of the password entry to select.
@@ -579,7 +587,8 @@ public sealed class SelectFirstEditableEntry : CSequence
         $@"\{{SelectFirstEditableEntry:(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    public override string PlaceHolderString => @"{SelectFirstEditableEntry:MaxWaitTimeMs}";
+    public const string _PlaceHolderString =  @"{SelectFirstEditableEntry:MaxWaitTimeMs}";
+    public override string PlaceHolderString => _PlaceHolderString;
 
     private SelectFirstEditableEntry(GroupCollection groups) : base(groups)
     {

@@ -23,27 +23,30 @@ namespace WebpageWaiter
     {
         private IPluginHost m_host = null;
 
+        private List<string> _placeHolderHints =
+        [WaitForUrl._PlaceHolderString,
+            WaitForWebpageReady._PlaceHolderString,
+            SelectFirstPwEntry._PlaceHolderString,
+            SelectEditableEntryAbovePw._PlaceHolderString,
+            SelectEditableEntryBelowPw._PlaceHolderString,
+            SelectPwEntry._PlaceHolderString,
+            SelectFirstEditableEntry._PlaceHolderString
+        ];
+
         public override bool Initialize(IPluginHost host)
         {
             if (host == null) return false;
             m_host                                 =  host;
             KeePass.Util.AutoType.FilterCompilePre += HandleAutoTypeFilterCompilePre;
 
-            Enum.GetValues(typeof(CSequence))
-                .Cast<CSequence>()
-                .Select(cSequence => cSequence.PlaceHolderString)
-                .ToList()
-                .ForEach(placeHolderString => SprEngine.FilterPlaceholderHints.Add(placeHolderString));
+            _placeHolderHints.ForEach(placeHolderString => SprEngine.FilterPlaceholderHints.Add(placeHolderString));
             return true;
         }
         public override void Terminate()
         {
             KeePass.Util.AutoType.FilterCompilePre -= HandleAutoTypeFilterCompilePre;
-            Enum.GetValues(typeof(CSequence))
-                .Cast<CSequence>()
-                .Select(cSequence => cSequence.PlaceHolderString)
-                .ToList()
-                .ForEach(placeHolderString => SprEngine.FilterPlaceholderHints.Remove(placeHolderString));
+            _placeHolderHints.ForEach(placeHolderString => SprEngine.FilterPlaceholderHints.Remove(placeHolderString));
+
         }
 
         public static void HandleAutoTypeFilterCompilePre(object sender,AutoTypeEventArgs e)
