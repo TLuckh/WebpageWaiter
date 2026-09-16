@@ -10,19 +10,19 @@ Without them, KeePass falls back to something <NET4.8, and it can't load the Plu
 
 # Usage
 Currently only WaitForWebpageReady with the placeholder `{WebpageReady:WaitTimeMs}`
-is implemented. 
+is implemented.
 
 It works by detecting your browser (Chrome, Brave, Firefox, Opera supported, each browser has to be added manually...)  
 then making a screenshot of the loading icon in the browser (the refresh button), and checking whether it's a circle or an X.
 
-If it detects that the webpage is loading, it waits, at most as long as given by `WaitTimeMs`. 
+If it detects that the webpage is loading, it waits, at most as long as given by `WaitTimeMs`.
 
 
 # Testing
 The automatic tests only are unit tests. For an integration test use "BrowserDetector/Tools"
 to open a permanently loading webpage.
 
-Open e.g. the Database in "Resources" (PW is a space), then make an entry for the browser you want to 
+Open e.g. the Database in "Resources" (PW is a space), then make an entry for the browser you want to
 test (currently there's only one for Chrome), open the perma-loading webpage and test it.
 
 
@@ -34,7 +34,7 @@ To add a browser:
 1. Download `FlaUInspect.exe`from https://github.com/FlaUI/FlaUInspect
 2. Open your Browser you want to add
 3. Open from Tools the webpage after starting the .py in the folder.
-4. Possibly, you have to refresh once manually 
+4. Possibly, you have to refresh once manually
 5. In FlaUInspect.exe.
 6. Choose the Browser
 7. Activate HoverMode
@@ -52,6 +52,6 @@ To add a browser:
 Now add your findings:
 1. Create a another Property in the class BrowserLoadingButtons in BrowserLoadingDetector.csproj
 2. Add the name of the browser in   `#region SwitchOnBrowser` as switch-case:  
-Use the name which is given by FlaUInspect.exe when choosing the Browser Window as its ending (e.g. for Chrome: New Tab - Chrome)
+   Use the name which is given by FlaUInspect.exe when choosing the Browser Window as its ending (e.g. for Chrome: New Tab - Chrome)
 
 Build the program and test if it's working.
