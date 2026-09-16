@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <AssemblyName>WebpageWaiterTests</AssemblyName>
+        <TargetFramework>net481</TargetFramework>
+        <IsTestProject>true</IsTestProject>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NUnit" Version="3.14.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.6.0">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+    <ProjectReference Include="..\KeePass\KeePass\KeePass_N48.csproj">
+        <Project>{10938016-dee2-4a25-9a5a-8fd3444379ca}</Project>
+        <Name>KeePass_N48</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebpageWaiter\WebpageWaiter.csproj" />
+    </ItemGroup>
+
+
+
+<!--    <ItemGroup Condition="'$(Configuration)' == 'Debug'">-->
+<!--        <ContentWithTargetPath Include="Resources\**">-->
+<!--            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
+<!--            <TargetPath>%(RecursiveDir)\%(Filename)%(Extension)</TargetPath>-->
+<!--        </ContentWithTargetPath>-->
+<!--    </ItemGroup>-->
+
+
+</Project>

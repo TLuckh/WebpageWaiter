@@ -1,0 +1,8 @@
+
+[*]
+
+# Microsoft .NET properties
+csharp_space_after_comma = false
+
+# ReSharper properties
+resharper_csharp_max_line_length = 132
