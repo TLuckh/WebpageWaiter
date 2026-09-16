@@ -118,7 +118,23 @@
         <Reference Include="KeePass">
             <HintPath>..\Resources\KeePass.exe</HintPath>
         </Reference>
+        <ContentWithTargetPath Include="..\Resources\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>%(RecursiveDir)\%(Filename)%(Extension)</TargetPath>
+        </ContentWithTargetPath>
     </ItemGroup>
+
+    <!-- Make a zip out of the files relevant to be uploaded -->
+    <Target Name="CreateWebWaiterZip"
+            AfterTargets="Build"
+            Condition="'$(Configuration)' == 'Release'">
+
+        <PropertyGroup>
+            <WebWaiterZipPath>$(TargetDir)WebWaiter.zip</WebWaiterZipPath>
+        </PropertyGroup>
+
+        <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Compress-Archive -LiteralPath '$(TargetPath)' -DestinationPath '$(WebWaiterZipPath)' -Force&quot;" />
+    </Target>
 
     <ItemGroup>
         <None Include="App.config" />
