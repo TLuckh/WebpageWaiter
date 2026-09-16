@@ -113,9 +113,8 @@
         <Reference Include="Costura, Version=6.2.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
             <HintPath>..\packages\Costura.Fody.6.2.0\lib\netstandard2.0\Costura.dll</HintPath>
         </Reference>
-
         <Reference Include="KeePass">
-            <HintPath>..\KeePass.exe</HintPath>
+            <HintPath>..\Resources\KeePass.exe</HintPath>
         </Reference>
     </ItemGroup>
 
