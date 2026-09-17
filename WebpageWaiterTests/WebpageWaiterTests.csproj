@@ -22,22 +22,21 @@
     <ProjectReference Include="..\WebpageWaiter\WebpageWaiter.csproj" />
     </ItemGroup>
 
-    <!-- Debug: gegen das KeePass-Projekt bauen -->
-    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <ProjectReference Include="..\KeePass\KeePass\KeePass_N48.csproj">
-            <Project>{10938016-dee2-4a25-9a5a-8fd3444379ca}</Project>
-            <Name>KeePass_N48</Name>
-        </ProjectReference>
+    <!-- Gegen die signierte KeePass.exe bauen -->
+    <ItemGroup>
+        <Reference Include="KeePass">
+            <HintPath>..\Resources\KeePass.exe</HintPath>
+        </Reference>
+        <ContentWithTargetPath Include="..\Resources\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>%(RecursiveDir)\%(Filename)%(Extension)</TargetPath>
+        </ContentWithTargetPath>
     </ItemGroup>
 
-    <!-- Release: gegen die signierte KeePass.exe bauen.
-         Costura-Referenz nur in Release. -->
+    <!-- Costura-Referenz nur in Release. -->
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
         <Reference Include="Costura, Version=6.2.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
             <HintPath>..\packages\Costura.Fody.6.2.0\lib\netstandard2.0\Costura.dll</HintPath>
-        </Reference>
-        <Reference Include="KeePass">
-            <HintPath>..\Resources\KeePass.exe</HintPath>
         </Reference>
     </ItemGroup>
 

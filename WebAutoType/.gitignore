@@ -1,8 +1,0 @@
-*.suo
-*.user
-.vs
-bin/
-obj/
-Releases/Build[!!-~]Outputs
-Releases/v*
-/Utilities

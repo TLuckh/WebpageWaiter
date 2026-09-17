@@ -1,9 +1,5 @@
 <Solution>
-  <Project Path="AutoTypeSplitter/AutoTypeSplitter.csproj" />
   <Project Path="BrowserLoadingDetector/BrowserLoadingDetector.csproj" />
-  <Project Path="KeePass/KeePass/KeePass_N48.csproj" />
-  <Project Path="KeePass/KeePassLib/KeePassLib_N48.csproj" />
-  <Project Path="WebAutoType/WebAutoType/WebAutoType.csproj" />
   <Project Path="WebpageWaiter/WebpageWaiter.csproj" />
   <Project Path="WebpageWaiterTests/WebpageWaiterTests.csproj" />
 </Solution>

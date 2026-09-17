@@ -48,11 +48,11 @@ namespace WebpageWaiterTests
         public void IrrelevantAndRelevantCSequencesMixed()
         {
             string url = "https://google.com/query?=3";
-            string relevantCSequence = nameof(WaitForUrl);
+            string relevantCSequence = "WebpageReady";
             string maxWaitTime = "100";
 
             string left = $"Hello World$!ß __ x3 ´{{Sample}}´ ";
-            string middle = $"{{{relevantCSequence}:{url}:{maxWaitTime}}}";
+            string middle = $"{{{relevantCSequence}:{maxWaitTime}}}";
             string right = $"!\"§%%&%$\"&";
             string sequence = left + middle + right;
             AutoTypeEventArgs e        = new AutoTypeEventArgs(sequence,false,null,null);
@@ -62,9 +62,8 @@ namespace WebpageWaiterTests
             
             Assert.True(res.parts.Count == 1);
             Assert.True(res.parts[0].partLeftOfSequence == left);
-            Assert.True(res.parts[0].cSequence is WaitForUrl);
-            var cSequence = (WaitForUrl) res.parts[0].cSequence ;
-            Assert.True(cSequence.Url == url);
+            Assert.True(res.parts[0].cSequence is WaitForWebpageReady);
+            var cSequence = (WaitForWebpageReady) res.parts[0].cSequence ;
             Assert.True(res.final_part== right);
         }
     }

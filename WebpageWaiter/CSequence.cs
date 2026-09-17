@@ -13,13 +13,13 @@ namespace WebpageWaiter;
 /// <summary>
 /// Base class for all custom {...}-sequences implemented in the plugin.
 /// </summary>
-public abstract class CSequence                                                         // I'd love this to be an interface with abstract static members... but alas net48...
+public abstract class CSequence // I'd love this to be an interface with abstract static members... but alas net48...
 {
     /// <summary>
     /// Regex corresponding to a generic {...}-sequence as found in auto-type-sequences.
     /// </summary>
     public static Regex GenericCSequence { get; } =
-        new Regex(@"{[^{}]*}", RegexOptions.Compiled);
+        new Regex(@"{[^{}]*}",RegexOptions.Compiled);
 
     /// <summary>
     /// The maximum amount of time in milliseconds for which <see cref="Perform"/>
@@ -54,40 +54,17 @@ public abstract class CSequence                                                 
     /// <param name="output">The matching custom sequence.</param>
     /// <param name="groups">The groups found by the matching regular expression.</param>
     /// <returns><c>true</c> if the input matches a known custom sequence; otherwise <c>false</c>.</returns>
-    public static bool TryParse(string input, out CSequence output)
+    public static bool TryParse(string input,out CSequence output)
     {
         if (input == null)
             throw new ArgumentNullException(nameof(input));
 
         switch (input)
         {
-            case string value when WaitForUrl.TryCreate(value, out WaitForUrl waitForUrl):
-                output = waitForUrl;
-                return true;
-
-            case string value when WaitForWebpageReady.TryCreate(value, out WaitForWebpageReady webpageReady):
+            case string value when WaitForWebpageReady.TryCreate(value,out WaitForWebpageReady webpageReady):
                 output = webpageReady;
                 return true;
 
-            case string value when SelectFirstPwEntry.TryCreate(value, out SelectFirstPwEntry firstPwEntry):
-                output = firstPwEntry;
-                return true;
-
-            case string value when SelectEditableEntryAbovePw.TryCreate(value, out SelectEditableEntryAbovePw abovePw):
-                output = abovePw;
-                return true;
-
-            case string value when SelectEditableEntryBelowPw.TryCreate(value, out SelectEditableEntryBelowPw belowPw):
-                output = belowPw;
-                return true;
-
-            case string value when SelectPwEntry.TryCreate(value, out SelectPwEntry pwEntry):
-                output = pwEntry;
-                return true;
-
-            case string value when SelectFirstEditableEntry.TryCreate(value, out SelectFirstEditableEntry firstEditableEntry):
-                output = firstEditableEntry;
-                return true;
 
             default:
                 output = null;
@@ -106,10 +83,7 @@ public abstract class CSequence                                                 
     /// <summary>
     /// Returns the maximum wait time stored during construction and validation.
     /// </summary>
-    public int GetMaxWaitTime()
-    {
-        return MaxWaitTime;
-    }
+    public int GetMaxWaitTime() { return MaxWaitTime; }
 
     /// <summary>
     /// Performs the action corresponding to this custom sequence
@@ -123,7 +97,7 @@ public abstract class CSequence                                                 
     /// <param name="initialDelayMs">Initial delay in ms.</param>
     /// <returns><c>true</c> if the action succeeded; otherwise <c>false</c>.</returns>
     /// <exception cref="InvalidCSequenceException">.</exception>
-    public bool Perform(int retryDelayMs = 100, int initialDelayMs = 100)
+    public bool Perform(int retryDelayMs = 100,int initialDelayMs = 100)
     {
         if (retryDelayMs < 0)
             throw new ArgumentOutOfRangeException(nameof(retryDelayMs));
@@ -132,10 +106,10 @@ public abstract class CSequence                                                 
             throw new ArgumentOutOfRangeException(nameof(initialDelayMs));
 
         IntPtr foregroundWindow = MarshallingMethods.GetForegroundWindow();
-        MarshallingMethods.GetWindowThreadProcessId(foregroundWindow, out uint foregroundWindowProcessId);
+        MarshallingMethods.GetWindowThreadProcessId(foregroundWindow,out uint foregroundWindowProcessId);
 
         Stopwatch stopwatch = Stopwatch.StartNew();
-        bool firstLoop = true;
+        bool      firstLoop = true;
 
         while (stopwatch.ElapsedMilliseconds < MaxWaitTime)
         {
@@ -181,20 +155,20 @@ public abstract class CSequence                                                 
     /// <param name="parameterName">The name of the parameter used in the error message.</param>
     /// <returns>The parsed positive integer.</returns>
     /// <exception cref="InvalidArgumentException">If the group is missing or does not contain a positive integer.</exception>
-    protected static int GetRequiredPositiveInt(GroupCollection groups, string groupName, string sequenceName, string parameterName)
+    protected static int GetRequiredPositiveInt(GroupCollection groups,string groupName,string sequenceName,string parameterName)
     {
         if (groups == null || !groups[groupName].Success)
         {
             throw new InvalidArgumentException(
-                "Webpage-Waiter Plugin Autotype-Sequence Error",
-                $"In the custom sequence {sequenceName}, {parameterName} has not been set.");
+                                               "Webpage-Waiter Plugin Autotype-Sequence Error",
+                                               $"In the custom sequence {sequenceName}, {parameterName} has not been set.");
         }
 
-        if (!int.TryParse(groups[groupName].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) || result <= 0)
+        if (!int.TryParse(groups[groupName].Value,NumberStyles.Integer,CultureInfo.InvariantCulture,out int result) || result <= 0)
         {
             throw new InvalidArgumentException(
-                "Webpage-Waiter Plugin Autotype-Sequence Error",
-                $"In the custom sequence {sequenceName}, {parameterName} must be a positive integer.");
+                                               "Webpage-Waiter Plugin Autotype-Sequence Error",
+                                               $"In the custom sequence {sequenceName}, {parameterName} must be a positive integer.");
         }
 
         return result;
@@ -209,92 +183,25 @@ public abstract class CSequence                                                 
     /// <param name="parameterName">The name of the parameter used in the error message.</param>
     /// <returns>The parsed non-negative integer.</returns>
     /// <exception cref="InvalidArgumentException">If the group is missing or does not contain a non-negative integer.</exception>
-    protected static int GetRequiredNonNegativeInt(GroupCollection groups, string groupName, string sequenceName, string parameterName)
+    protected static int GetRequiredNonNegativeInt(GroupCollection groups,string groupName,string sequenceName,string parameterName)
     {
         if (groups == null || !groups[groupName].Success)
         {
             throw new InvalidArgumentException(
-                "Webpage-Waiter Plugin Autotype-Sequence Error",
-                $"In the custom sequence {sequenceName}, {parameterName} has not been set.");
+                                               "Webpage-Waiter Plugin Autotype-Sequence Error",
+                                               $"In the custom sequence {sequenceName}, {parameterName} has not been set.");
         }
 
-        if (!int.TryParse(groups[groupName].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) || result < 0)
+        if (!int.TryParse(groups[groupName].Value,NumberStyles.Integer,CultureInfo.InvariantCulture,out int result) || result < 0)
         {
             throw new InvalidArgumentException(
-                "Webpage-Waiter Plugin Autotype-Sequence Error",
-                $"In the custom sequence {sequenceName}, {parameterName} must be a non-negative integer.");
+                                               "Webpage-Waiter Plugin Autotype-Sequence Error",
+                                               $"In the custom sequence {sequenceName}, {parameterName} must be a non-negative integer.");
         }
 
         return result;
     }
 }
-
-
-/// <summary>
-/// Waits until the specified URL is shown.
-/// </summary>
-public sealed class WaitForUrl : CSequence
-{
-
-    public static Regex Regex { get; } = new Regex(
-                                                   $@"\{{WaitForUrl:(?<{nameof(Url)}>[^{{}}]*):(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
-                                                   RegexOptions.IgnoreCase | RegexOptions.Compiled);
-    
-    public const string _PlaceHolderString = @"{WaitForUrl:URL:MaxWaitTimeMs}";
-    public override string PlaceHolderString => _PlaceHolderString;
-
-    /// <summary>
-    /// The URL that is expected to be shown.
-    /// </summary>
-    public string Url { get; private set; }
-
-    private WaitForUrl(GroupCollection groups) : base(groups)
-    {
-        Validate(groups);
-    }
-
-    public static bool TryCreate(string input, out WaitForUrl output)
-    {
-        Match match = Regex.Match(input);
-
-        if (!match.Success)
-        {
-            output = null;
-            return false;
-        }
-
-        output = new WaitForUrl(match.Groups);
-        return true;
-    }
-
-    /// <summary>
-    /// Validates the parameters of the WaitForUrl sequence.
-    /// </summary>
-    /// <param name="groups">The groups found by the sequence's regular expression.</param>
-    public override void Validate(GroupCollection groups)
-    {
-        Url = groups[nameof(Url)].Value;
-        MaxWaitTime = GetRequiredPositiveInt(groups, nameof(MaxWaitTime), PlaceHolderString, "MaxWaitTimeMs");
-    }
-
-    /// <summary>
-    /// Returns true if the passed URL is currently shown, and false if not.
-    /// It also returns false if an error happened while trying to obtain the current URL.
-    /// Retry logic and error handling are implemented by <see cref="CSequence.Perform"/>.
-    /// </summary>
-    /// <param name="foregroundWindowProcessId">The process ID of the relevant foreground window.</param>
-    /// <returns><c>true</c> if the expected URL is active; otherwise <c>false</c>.</returns>
-    protected override bool TryPerform(uint foregroundWindowProcessId)
-    {
-        string currentUrl = DataStructures.GetUrl();
-
-        return string.Equals(
-            currentUrl,
-            Url,
-            StringComparison.InvariantCultureIgnoreCase);
-    }
-}
-
 
 /// <summary>
 /// Waits until the webpage has finished loading.
@@ -306,17 +213,14 @@ public sealed class WaitForWebpageReady : CSequence
     public static Regex Regex { get; } = new Regex(
                                                    $@"\{{WebpageReady:(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
                                                    RegexOptions.IgnoreCase | RegexOptions.Compiled);
-    
+
     public const string _PlaceHolderString = @"{WebpageReady:WaitTimeMs}";
 
     public override string PlaceHolderString => _PlaceHolderString;
 
-    private WaitForWebpageReady(GroupCollection groups) : base(groups)
-    {
-        Validate(groups);
-    }
+    private WaitForWebpageReady(GroupCollection groups) : base(groups) { Validate(groups); }
 
-    public static bool TryCreate(string input, out WaitForWebpageReady output)
+    public static bool TryCreate(string input,out WaitForWebpageReady output)
     {
         Match match = Regex.Match(input);
 
@@ -336,7 +240,7 @@ public sealed class WaitForWebpageReady : CSequence
     /// <param name="groups">The groups found by the sequence's regular expression.</param>
     public override void Validate(GroupCollection groups)
     {
-        MaxWaitTime = GetRequiredPositiveInt(groups, nameof(MaxWaitTime), PlaceHolderString, "WaitTimeMs");
+        MaxWaitTime = GetRequiredPositiveInt(groups,nameof(MaxWaitTime),PlaceHolderString,"WaitTimeMs");
     }
 
     /// <summary>
@@ -352,22 +256,22 @@ public sealed class WaitForWebpageReady : CSequence
         // since the busy state wasn't reliable.
 
         AutomationElement button = BrowserLoadingButtons.GetLoadingButton(
-            delayMs: 0,
-            processId: foregroundWindowProcessId);
+                                                                          delayMs: 0,
+                                                                          processId: foregroundWindowProcessId);
 
         if (button == null)
         {
             Debug.WriteLine("Couldn't get button");
             return false;
         }
-        
+
         BitmapMat buttonState = Program.GetLoadingButtonBitmap(button);
         if (buttonState == null)
         {
             Debug.WriteLine("Couldn't get button bitmap.");
             return false;
         }
-        
+
         // Caching works out temporally: I
         // In the first run the previously cached state is null and so a change occurs.
         // Afterwards, if the state doesn't change, then we're still loading.
@@ -380,285 +284,36 @@ public sealed class WaitForWebpageReady : CSequence
         bool isLoadingFinished = Program.HasLoadingFinished(buttonState);
         return isLoadingFinished;
     }
-
-
 }
-
-
-/// <summary>
-/// Selects the first password entry.
-/// </summary>
-public sealed class SelectFirstPwEntry : CSequence
-{
-    public static Regex Regex { get; } = new Regex(
-        $@"\{{SelectFirstPwEntry:(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-    public const string _PlaceHolderString = @"{SelectFirstPwEntry:MaxWaitTimeMs}";
-    public override string PlaceHolderString => _PlaceHolderString;
-
-    private SelectFirstPwEntry(GroupCollection groups) : base(groups)
-    {
-        Validate(groups);
-    }
-
-    public static bool TryCreate(string input, out SelectFirstPwEntry output)
-    {
-        Match match = Regex.Match(input);
-
-        if (!match.Success)
-        {
-            output = null;
-            return false;
-        }
-
-        output = new SelectFirstPwEntry(match.Groups);
-        return true;
-    }
-
-    public override void Validate(GroupCollection groups)
-    {
-        MaxWaitTime = GetRequiredPositiveInt(groups, nameof(MaxWaitTime), PlaceHolderString, "MaxWaitTimeMs");
-    }
-
-    protected override bool TryPerform(uint foregroundWindowProcessId)
-    {
-        throw new InvalidOperationException();
-    } // ToDo Use WebAutoType for this, they already did the work after all
-}
-
-
-/// <summary>
-/// Selects the editable entry above the password entry.
-/// </summary>
-public sealed class SelectEditableEntryAbovePw : CSequence
-{
-    public static Regex Regex { get; } = new Regex(
-        $@"\{{SelectEditableEntryAbovePw:(?<{nameof(Index)}>[^{{}}]*):(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-    public const string _PlaceHolderString = @"{SelectEditableEntryAbovePw:INTEGER:MaxWaitTimeMs}";
-    public override string PlaceHolderString => _PlaceHolderString;
-
-    /// <summary>
-    /// The zero-based index of the editable entry above the password entry.
-    /// </summary>
-    public int Index { get; private set; }
-
-    private SelectEditableEntryAbovePw(GroupCollection groups) : base(groups)
-    {
-        Validate(groups);
-    }
-
-    public static bool TryCreate(string input, out SelectEditableEntryAbovePw output)
-    {
-        Match match = Regex.Match(input);
-
-        if (!match.Success)
-        {
-            output = null;
-            return false;
-        }
-
-        output = new SelectEditableEntryAbovePw(match.Groups);
-        return true;
-    }
-
-    public override void Validate(GroupCollection groups)
-    {
-        // Validation that the index actually refers to an existing entry is not implemented yet.
-        Index = GetRequiredNonNegativeInt(groups, nameof(Index), PlaceHolderString, "Index");
-        MaxWaitTime = GetRequiredPositiveInt(groups, nameof(MaxWaitTime), PlaceHolderString, "MaxWaitTimeMs");
-    }
-
-    protected override bool TryPerform(uint foregroundWindowProcessId)
-    {
-        throw new InvalidOperationException();
-    } // ToDo Use WebAutoType for this, they already did the work after all
-}
-
-
-/// <summary>
-/// Selects the editable entry below the password entry.
-/// </summary>
-public sealed class SelectEditableEntryBelowPw : CSequence
-{
-    public static Regex Regex { get; } = new Regex(
-        $@"\{{SelectEditableEntryBelowPw:(?<{nameof(Index)}>[^{{}}]*):(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-    public const string _PlaceHolderString = @"{SelectEditableEntryBelowPw:INTEGER:MaxWaitTimeMs}";
-    public override string PlaceHolderString => _PlaceHolderString;
-
-    /// <summary>
-    /// The zero-based index of the editable entry below the password entry.
-    /// </summary>
-    public int Index { get; private set; }
-
-    private SelectEditableEntryBelowPw(GroupCollection groups) : base(groups)
-    {
-        Validate(groups);
-    }
-
-    public static bool TryCreate(string input, out SelectEditableEntryBelowPw output)
-    {
-        Match match = Regex.Match(input);
-
-        if (!match.Success)
-        {
-            output = null;
-            return false;
-        }
-
-        output = new SelectEditableEntryBelowPw(match.Groups);
-        return true;
-    }
-
-    public override void Validate(GroupCollection groups)
-    {
-        // Validation that the index actually refers to an existing entry is not implemented yet.
-        Index = GetRequiredNonNegativeInt(groups, nameof(Index), PlaceHolderString, "Index");
-        MaxWaitTime = GetRequiredPositiveInt(groups, nameof(MaxWaitTime), PlaceHolderString, "MaxWaitTimeMs");
-    }
-
-    protected override bool TryPerform(uint foregroundWindowProcessId)
-    {
-        throw new InvalidOperationException();
-    } // ToDo Use WebAutoType for this, they already did the work after all
-}
-
-
-/// <summary>
-/// Selects a password entry.
-/// </summary>
-public sealed class SelectPwEntry : CSequence
-{
-    public static Regex Regex { get; } = new Regex(
-        $@"\{{SelectPwEntry:(?<{nameof(Index)}>[^{{}}]*):(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-    public const string _PlaceHolderString = @"{SelectPwEntry:INTEGER:MaxWaitTimeMs}";
-    public override string PlaceHolderString => _PlaceHolderString;
-
-    /// <summary>
-    /// The zero-based index of the password entry to select.
-    /// </summary>
-    public int Index { get; private set; }
-
-    private SelectPwEntry(GroupCollection groups) : base(groups)
-    {
-        Validate(groups);
-    }
-
-    public static bool TryCreate(string input, out SelectPwEntry output)
-    {
-        Match match = Regex.Match(input);
-
-        if (!match.Success)
-        {
-            output = null;
-            return false;
-        }
-
-        output = new SelectPwEntry(match.Groups);
-        return true;
-    }
-
-    public override void Validate(GroupCollection groups)
-    {
-        // Validation that the index actually refers to an existing entry is not implemented yet.
-        Index = GetRequiredNonNegativeInt(groups, nameof(Index), PlaceHolderString, "Index");
-        MaxWaitTime = GetRequiredPositiveInt(groups, nameof(MaxWaitTime), PlaceHolderString, "MaxWaitTimeMs");
-    }
-
-    protected override bool TryPerform(uint foregroundWindowProcessId)
-    {
-        throw new InvalidOperationException();
-    } // ToDo Use WebAutoType for this, they already did the work after all
-}
-
-
-/// <summary>
-/// Selects the first editable entry.
-/// </summary>
-public sealed class SelectFirstEditableEntry : CSequence
-{
-    public static Regex Regex { get; } = new Regex(
-        $@"\{{SelectFirstEditableEntry:(?<{nameof(MaxWaitTime)}>[^{{}}]*)\}}",
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-    public const string _PlaceHolderString =  @"{SelectFirstEditableEntry:MaxWaitTimeMs}";
-    public override string PlaceHolderString => _PlaceHolderString;
-
-    private SelectFirstEditableEntry(GroupCollection groups) : base(groups)
-    {
-        Validate(groups);
-    }
-
-    public static bool TryCreate(string input, out SelectFirstEditableEntry output)
-    {
-        Match match = Regex.Match(input);
-
-        if (!match.Success)
-        {
-            output = null;
-            return false;
-        }
-
-        output = new SelectFirstEditableEntry(match.Groups);
-        return true;
-    }
-
-    public override void Validate(GroupCollection groups)
-    {
-        // Validation of the actual selection behavior is not implemented yet.
-        MaxWaitTime = GetRequiredPositiveInt(groups, nameof(MaxWaitTime), PlaceHolderString, "MaxWaitTimeMs");
-    }
-
-    protected override bool TryPerform(uint foregroundWindowProcessId)
-    {
-        throw new InvalidOperationException();
-    } // ToDo Use WebAutoType for this, they already did the work after all
-}
-
 
 public class InvalidArgumentException : Exception
 {
-    public string Title { get; }
+    public          string Title   { get; }
     public override string Message { get; }
 
-    public InvalidArgumentException(string title, string message)
+    public InvalidArgumentException(string title,string message)
     {
-        Title = title;
+        Title   = title;
         Message = message;
     }
 
     public void ShowErrorMessage()
     {
         MessageBox.Show(
-            Message,
-            Title,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error);
+                        Message,
+                        Title,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
     }
 }
 
-
 public class InvalidCSequenceException : Exception
 {
-    public InvalidCSequenceException()
-    {
-    }
+    public InvalidCSequenceException() { }
 
-    public InvalidCSequenceException(string message) : base(message)
-    {
-    }
+    public InvalidCSequenceException(string message) : base(message) { }
 
-    public InvalidCSequenceException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
+    public InvalidCSequenceException(string message,Exception innerException) : base(message,innerException) { }
 
-    protected InvalidCSequenceException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
+    protected InvalidCSequenceException(SerializationInfo info,StreamingContext context) : base(info,context) { }
 }

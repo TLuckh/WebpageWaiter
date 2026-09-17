@@ -24,13 +24,9 @@ namespace WebpageWaiter
         private IPluginHost m_host = null;
 
         private List<string> _placeHolderHints =
-        [WaitForUrl._PlaceHolderString,
+        [
             WaitForWebpageReady._PlaceHolderString,
-            SelectFirstPwEntry._PlaceHolderString,
-            SelectEditableEntryAbovePw._PlaceHolderString,
-            SelectEditableEntryBelowPw._PlaceHolderString,
-            SelectPwEntry._PlaceHolderString,
-            SelectFirstEditableEntry._PlaceHolderString
+
         ];
 
         public override bool Initialize(IPluginHost host)
