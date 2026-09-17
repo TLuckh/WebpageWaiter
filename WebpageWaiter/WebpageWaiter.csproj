@@ -142,6 +142,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="#ToDos.md" />
       <Content Include="README.md" />
     </ItemGroup>
 

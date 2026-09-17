@@ -12,10 +12,7 @@ using KeePass.Util.Spr;
 using KeePassLib.Utility;
 using Debug = System.Diagnostics.Debug;
 
-// ToDo: For all remaining methods but the URL-check, we can make good use of FlaUIs capability of returning the center point, so we can enumerate all as editable (pw) fields from left to right, from top to bottom.
-// ToDo: Make HoughCircle only check center-points of the circle near the center of the picture? Not sure tbh
-// ToDo: Add in .csproj that the Release-Build builds against the KeePass.exe (do I need to sign my assembly)?
-// ToDo: Ship as Plugin-Extension-Format?
+
 
 
 namespace WebpageWaiter
